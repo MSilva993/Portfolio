@@ -2,6 +2,9 @@
 evento = {}
 inscricoes = {}
 
+# Biblioteca para ocultar a senha durante a digitação
+import getpass
+
 # Senha do Coordenador
 coordenador_senha = "123456"
 
@@ -271,12 +274,16 @@ def excluir_eventos():
 
 # Função para autenticar o coordenador
 def autenticar_coordenador():
-    senha = input("Digite a senha do coordenador: ").strip()
-    if senha == coordenador_senha:
+    print("Digite a senha do coordenador (ou pressione Enter para voltar ao menu principal):")
+    senha = getpass.getpass("Senha: ").strip()
+    if not senha:  # Se a senha estiver vazia (Enter pressionado)
+        print("Voltando ao menu principal...\n")
+        return False  # Retorne False para indicar retorno ao menu principal
+    elif senha == coordenador_senha:
         print("Autenticação bem-sucedida! \n")
         return True
     else:
-        print("Senha incorreta. \n")
+        print("Senha incorreta! Tente novamente. \n")
         return False
 
 # Loop principal do programa
@@ -296,32 +303,32 @@ while True:
             print("Entrada inválida. Por favor, insira um número válido.")
 
     if escolha_perfil == 1:  # Menu para Coordenador
-        while not autenticar_coordenador():  # Continua solicitando senha até autenticar corretamente
-            pass
-        
-        while True:
-            exibir_menu_coordenador()
-            try:
-                escolha_opcao = int(input("Qual opção você deseja? ").strip())
-                if escolha_opcao == 1:
-                    cadastrar_eventos()
-                elif escolha_opcao == 2:
-                    atualizar_eventos()
-                elif escolha_opcao == 3:
-                    exibir_evento()
-                elif escolha_opcao == 4:
-                    exibir_inscritos()
-                elif escolha_opcao == 5:
-                    cancelar_eventos()
-                elif escolha_opcao == 6:
-                    excluir_eventos()
-                elif escolha_opcao == 7:
-                    break
-                else:
-                    print("Opção inválida. Por favor, escolha uma opção válida.")
-            except ValueError:
-                print("Entrada inválida. Por favor, insira um número válido.")
-            input("Pressione Enter para voltar ao menu dos coordenadores...")
+        if autenticar_coordenador():  # Autenticação bem-sucedida ou retorno ao menu principal
+            while True:
+                exibir_menu_coordenador()
+                try:
+                    escolha_opcao = int(input("Qual opção você deseja? ").strip())
+                    if escolha_opcao == 1:
+                        cadastrar_eventos()
+                    elif escolha_opcao == 2:
+                        atualizar_eventos()
+                    elif escolha_opcao == 3:
+                        exibir_evento()
+                    elif escolha_opcao == 4:
+                        exibir_inscritos()
+                    elif escolha_opcao == 5:
+                        cancelar_eventos()
+                    elif escolha_opcao == 6:
+                        excluir_eventos()
+                    elif escolha_opcao == 7:
+                        break
+                    else:
+                        print("Opção inválida. Por favor, escolha uma opção válida.")
+                except ValueError:
+                    print("Entrada inválida. Por favor, insira um número válido.")
+                input("Pressione Enter para voltar ao menu dos coordenadores...")
+        else:
+            continue  # Voltar ao menu principal se a autenticação falhar ou o usuário pressionar Enter
 
     elif escolha_perfil == 2:  # Menu para Aluno
         while True:
@@ -338,4 +345,4 @@ while True:
                     print("Opção inválida. Por favor, escolha uma opção válida.")
             except ValueError:
                 print("Entrada inválida. Por favor, insira um número válido.")
-            input("Pressione Enter para voltar ao menu do aluno...")  # Confirmação unificada aqui
+            input("Pressione Enter para voltar ao menu do aluno...")
